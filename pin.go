@@ -23,6 +23,13 @@ func NewPin(id uint64, ext Ext) Pin {
 	return p
 }
 
+// Bytes ...
+func (p Pin) Bytes() []byte {
+	enc := append([]byte{}, p.ID.Bytes()...)
+	return append(enc, p.Ext.Val(), binaryVersion)
+}
+
+// String ...
 func (p Pin) String() string {
 	return p.ID.String() + "." + p.Ext.String()
 }
@@ -35,26 +42,23 @@ func (p Pin) Path() string {
 
 // MarshalBinary implements the encoding.BinaryMarshaler interface.
 func (p Pin) MarshalBinary() ([]byte, error) {
-	enc := []byte{binaryVersion}
-	enc = append(enc, p.ID.Bytes()...)
-	return append(enc, p.Ext.Val()), nil
+	return p.Bytes(), nil
 }
 
 // UnmarshalBinary implements the encoding.BinaryUnmarshaler interface.
-func (p *Pin) UnmarshalBinary(data []byte) error {
-	buf := data
+func (p *Pin) UnmarshalBinary(buf []byte) error {
 	if len(buf) == 0 {
 		return errors.New("Pin.UnmarshalBinary: no data")
 	}
 
-	if buf[0] != binaryVersion {
+	if len(buf) != /*id*/ 8+ /*ext*/ 1+ /*version*/ 1 {
+		return errors.New("Pin.UnmarshalBinary: invalid length")
+	}
+
+	if buf[len(buf)-1] != binaryVersion {
 		return errors.New("Pin.UnmarshalBinary: unsupported version")
 	}
 
-	if len(buf) != /*version*/ 1+ /*id*/ 8+ /*ext*/ 1 {
-		return errors.New("Pin.UnmarshalBinary: invalid length")
-	}
-	buf = buf[1:]
 	id := int64(buf[7]) | int64(buf[6])<<8 | int64(buf[5])<<16 | int64(buf[4])<<24 |
 		int64(buf[3])<<32 | int64(buf[2])<<40 | int64(buf[1])<<48 | int64(buf[0])<<56
 

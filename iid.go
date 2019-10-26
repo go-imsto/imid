@@ -2,7 +2,6 @@ package imagid
 
 import (
 	"database/sql/driver"
-	"encoding/binary"
 	"fmt"
 	"math/big"
 )
@@ -12,7 +11,8 @@ type IID uint64
 
 // Bytes ...
 func (z IID) Bytes() []byte {
-	return toBytes(uint64(z))
+	var bInt big.Int
+	return bInt.SetUint64(uint64(z)).Bytes()
 }
 
 // String ...
@@ -33,12 +33,6 @@ func (z *IID) UnmarshalText(data []byte) (err error) {
 	id, err = ParseID(string(data))
 	*z = id
 	return
-}
-
-func toBytes(id uint64) []byte {
-	buf := make([]byte, 8)
-	binary.BigEndian.PutUint64(buf, id)
-	return buf
 }
 
 // ParseID ...

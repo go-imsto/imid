@@ -1,11 +1,15 @@
 package imagid
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/cespare/xxhash"
+
+	"github.com/liut/baseconv"
 )
 
+// TestPin ...
 func TestPin(t *testing.T) {
 	for _, cs := range []struct {
 		name string
@@ -26,7 +30,12 @@ func TestPin(t *testing.T) {
 		p := NewPin(id, EtPNG)
 		// b := p.ID.Bytes()
 		// t.Logf("id len %d", len(b))
-		t.Logf("%4s id: %20d %14s \t%s", cs.name, p.ID, p.ID, p.Path())
+		b := p.Bytes()
+		lid, err := baseconv.Convert(fmt.Sprintf("%x", b), 16, 36)
+		if err != nil {
+			t.Error(err)
+		}
+		t.Logf("%4s id: %20d %14x %14s \t%s\t%x,%s", cs.name, p.ID, p.ID.Bytes(), p.ID, p.Path(), b, lid)
 		s := p.String()
 		p2, err := ParsePin(s)
 		if err != nil {
@@ -39,6 +48,7 @@ func TestPin(t *testing.T) {
 	}
 }
 
+// TestExt ...
 func TestExt(t *testing.T) {
 	for _, cs := range []struct {
 		name string
