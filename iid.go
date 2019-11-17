@@ -18,7 +18,7 @@ func (z IID) Bytes() []byte {
 // String ...
 func (z IID) String() string {
 	var bInt big.Int
-	return bInt.SetUint64(uint64(z)).Text(36)
+	return reverse(bInt.SetUint64(uint64(z)).Text(36))
 }
 
 // MarshalText implements the encoding.TextMarshaler interface.
@@ -39,7 +39,7 @@ func (z *IID) UnmarshalText(data []byte) (err error) {
 func ParseID(s string) (IID, error) {
 	var id uint64
 	var bI big.Int
-	if i, ok := bI.SetString(s, 36); ok {
+	if i, ok := bI.SetString(reverse(s), 36); ok {
 		id = i.Uint64()
 	} else {
 		return 0, fmt.Errorf("invalid id %q", s)
@@ -61,4 +61,12 @@ func (z *IID) Scan(src interface{}) (err error) {
 // Value implements of database/sql/driver.Valuer
 func (z IID) Value() (driver.Value, error) {
 	return z.String(), nil
+}
+
+func reverse(s string) string {
+	runes := []rune(s)
+	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
+		runes[i], runes[j] = runes[j], runes[i]
+	}
+	return string(runes)
 }
