@@ -13,9 +13,9 @@ func ExampleIID1() {
 }
 
 func ExampleIID2() {
-	var v uint64 = 149497847983638530 // 14vzpk09yxoh
+	var v uint64 = 149497847983638530 // 14w0kb8xep6q
 	id := IID(v)
 	fmt.Printf("%s", id)
 	// Output:
-	// q6pex8bk0w41
+	// aq6pex8bk0w41
 }
