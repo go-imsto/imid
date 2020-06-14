@@ -2,15 +2,16 @@ package imagid
 
 import (
 	"fmt"
+	"hash/crc64"
 	"testing"
-
-	"github.com/cespare/xxhash"
 
 	"github.com/liut/baseconv"
 )
 
 // TestPin ...
 func TestPin(t *testing.T) {
+
+	crc64q := crc64.MakeTable(crc64.ISO)
 	for _, cs := range []struct {
 		name string
 		n    int
@@ -26,7 +27,7 @@ func TestPin(t *testing.T) {
 		for i := range input {
 			input[i] = byte(i)
 		}
-		id := xxhash.Sum64(input)
+		id := crc64.Checksum(input, crc64q)
 		p := NewPin(id, EtPNG)
 		// b := p.ID.Bytes()
 		// t.Logf("id len %d", len(b))
