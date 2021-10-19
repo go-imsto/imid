@@ -1,4 +1,4 @@
-package imagid
+package imid
 
 import (
 	"fmt"
