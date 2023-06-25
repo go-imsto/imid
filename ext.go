@@ -13,6 +13,7 @@ const (
 	EtGIF
 	EtJPEG
 	EtPNG
+	EtWebP
 )
 
 // String for fmt.Stringer
@@ -24,6 +25,8 @@ func (z Ext) String() string {
 		return "jpeg"
 	case EtPNG:
 		return "png"
+	case EtWebP:
+		return "webp"
 	}
 	return "unknown"
 }
@@ -57,6 +60,8 @@ func ParseExt(s string) Ext {
 		return EtJPEG
 	case "png":
 		return EtPNG
+	case "webp":
+		return EtWebP
 	}
 	return EtNone
 }
